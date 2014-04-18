@@ -69,7 +69,7 @@ $sliderinfo_2_metabox = array(
 				
 				array(
 					'name' 			=> 'Slide Image',
-					'desc' 			=> 'Image needs to be 670x360',
+					'desc' 			=> 'Image needs to be 670x360 for open themes 1000x425 for flagship themes',
 					'id' 			=> 'ecpt_slideimage',
 					'class' 		=> 'ecpt_slideimage',
 					'type' 			=> 'upload',
@@ -77,19 +77,7 @@ $sliderinfo_2_metabox = array(
 					'max' 			=> 0,
 					'std'			=> ''													
 				),
-															
-				array(
-					'name' 			=> 'Slide Color',
-					'desc' 			=> 'Choose yellow, blue, green. This is only relevant for the \"Blue\" variation of this theme.',
-					'id' 			=> 'ecpt_slidecolor',
-					'class' 		=> 'ecpt_slidecolor',
-					'type' 			=> 'radio',
-					'rich_editor' 	=> 1,			
-					'options' => array('blueslide','yellowslide','greenslide'),
-					'max' 			=> 0,
-					'std'			=> ''													
-				),
-															
+																														
 				array(
 					'name' 			=> 'URL Destination',
 					'desc' 			=> 'Enter url of destination page',
