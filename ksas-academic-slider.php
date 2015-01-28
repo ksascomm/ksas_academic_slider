@@ -26,7 +26,7 @@ License: GPL2
 		
 		$taxonomies = array();
 		
-		$supports = array('title', 'editor','revisions');
+		$supports = array('title', 'editor','revisions', 'page-attributes');
 		
 		$post_type_args = array(
 			'labels' 			=> $labels,
