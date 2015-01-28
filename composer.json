@@ -23,6 +23,6 @@
   },
   "replace": {
         "cpeckens/plugin_ksas_slider": "1.0.*"
-    },
+    }
 }
 
