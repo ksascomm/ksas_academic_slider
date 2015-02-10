@@ -1,5 +1,5 @@
 {
-  "name": "ksascomm/ksas_academic_slider",
+  "name": "ksascomm/ksas-academic-slider",
   "type": "wordpress-plugin",
   "license": "GPL2",
   "description": "Creates a custom post type for homepage slider.  This plugin is currently configured to only work with the Academic Template",
