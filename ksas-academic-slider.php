@@ -34,6 +34,7 @@ License: GPL2
 			'public' 			=> true,
 			'show_ui' 			=> true,
 			'publicly_queryable'=> true,
+			'exclude_from_search' => true,
 			'query_var'			=> true,
 			'capability_type'   => 'slide',
 			'capabilities' => array(
