@@ -26,7 +26,7 @@ License: GPL2
 		
 		$taxonomies = array();
 		
-		$supports = array('title', 'editor','revisions', 'page-attributes');
+		$supports = array('title', 'editor','revisions', 'thumbnail');
 		
 		$post_type_args = array(
 			'labels' 			=> $labels,
@@ -142,7 +142,7 @@ function ecpt_show_sliderinfo_2_box()	{
 				echo '<input type="text" class="ecpt_datepicker" name="' . $field['id'] . '" id="' . $field['id'] . '" value="'. $value . '" size="30" style="width:97%" />' . '' . $field['desc'];
 				break;
 			case 'upload':
-				echo '<input type="text" class="ecpt_upload_field" name="', $field['id'], '" id="', $field['id'], '" value="', $meta ? $meta : $field['std'], '" size="30" style="width:80%" /><input class="ecpt_upload_image_button" type="button" value="Upload Image" /><br/>', '', stripslashes($field['desc']);
+				echo '<input type="text" class="ecpt_upload_field" name="', $field['id'], '" id="', $field['id'], '" value="', $meta ? $meta : $field['std'], '" size="30" style="width:80%" /><br/>', '', stripslashes($field['desc']);
 				break;
 			case 'textarea':
 			
