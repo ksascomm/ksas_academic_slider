@@ -1,13 +1,46 @@
 <?php
 /*
 Plugin Name: KSAS Homepage Slider for Academic Template
-Plugin URI: http://krieger2.jhu.edu/comm/web/plugins/slider
+Plugin URI: https://github.com/ksascomm/ksas_academic_slider
 Description: Creates a custom post type for homepage slider.  This plugin is currently configured to only work with the Academic Template
-Version: 1.0
-Author: Cara Peckens
-Author URI: mailto:cpeckens@jhu.edu
+Version: 2.0
+Author: KSAS Communications
+Author URI: mailto:ksasweb@jhu.edu
 License: GPL2
 */
+// hook into the init action and call create_book_taxonomies when it fires
+add_action( 'init', 'create_slider_taxonomies', 0 );
+
+// create three taxonomies for the post type "slider"
+function create_slider_taxonomies() {
+	// Add new taxonomy, make it hierarchical (like categories)
+	$labels = array(
+			'name' 					=> _x( 'Slider Types', 'taxonomy general name' ),
+			'singular_name' 		=> _x( 'Slider Type', 'taxonomy singular name' ),
+			'add_new' 				=> _x( 'Add New Slider Type', 'Slider Type'),
+			'add_new_item' 			=> __( 'Add New Slider Type' ),
+			'edit_item' 			=> __( 'Edit Slider Type' ),
+			'new_item' 				=> __( 'New Slider Type' ),
+			'view_item' 			=> __( 'View Slider Type' ),
+			'search_items' 			=> __( 'Search Slider Types' ),
+			'not_found' 			=> __( 'No Slider Type found' ),
+			'not_found_in_trash' 	=> __( 'No Slider Type found in Trash' ),
+		);
+
+		$args = array(
+			'labels' 			=> $labels,
+			'singular_label' 	=> __('Slider Type'),
+			'public' 			=> true,
+			'show_ui' 			=> true,
+			'hierarchical' 		=> true,
+			'show_tagcloud' 	=> false,
+			'show_in_nav_menus' => false,
+			'rewrite' 			=> array('slug' => 'slider', 'with_front' => false ),
+		 );
+	register_taxonomy( 'slider_type', 'slider', $args );
+}
+
+
 // registration code for slider post type
 	function register_slider_posttype() {
 		$labels = array(
@@ -24,7 +57,7 @@ License: GPL2
 			'parent_item_colon' => ''
 		);
 		
-		$taxonomies = array();
+		//$taxonomies = array();
 		
 		$supports = array('title', 'editor','revisions', 'thumbnail');
 		
@@ -52,7 +85,7 @@ License: GPL2
 			'rewrite' 			=> array('slug' => 'slider', 'with_front' => false ),
 			'supports' 			=> $supports,
 			'menu_position' 	=> 5,
-			'taxonomies'		=> $taxonomies
+			//'taxonomies'		=> $taxonomies
 		 );
 		 register_post_type('slider',$post_type_args);
 	}
@@ -281,5 +314,100 @@ function ecpt_sliderinfo_2_save($post_id) {
 		}
 	}
 }
+
+// Add to admin_init function
+add_filter('manage_edit-slider_columns', 'my_slider_columns');
+
+function my_slider_columns($columns) {
+    $new_columns['cb'] = '<input type="checkbox" />';
+    $new_columns['title'] = _x('Title', 'column name');
+    $new_columns['type'] = __('Slider Type'); 
+    $new_columns['image'] = __('Thumbnail');     
+    return $new_columns;
+}
+
+// Add to admin_init function
+add_action('manage_slider_posts_custom_column', 'my_manage_slider_columns', 10, 2);
+ 
+function my_manage_slider_columns($column_name, $post_id) {
+    global $post;
+    switch ($column_name) {
+    case 'image':
+		if(has_post_thumbnail( $post->ID )) {
+				echo the_post_thumbnail('medium');
+				}
+			/* If there is a duration, append 'minutes' to the text string. */
+			else {
+				
+				echo __( 'No Thumbnail' );
+			}
+        break;
+		/* If displaying the 'program_type' column. */
+
+		case 'type' :
+
+			/* Get the program_types for the post. */
+			$terms = get_the_terms( $post_id, 'slider_type' );
+
+			/* If terms were found. */
+			if ( !empty( $terms ) ) {
+
+				$out = array();
+
+				/* Loop through each term, linking to the 'edit posts' page for the specific term. */
+				foreach ( $terms as $term ) {
+					$out[] = sprintf( '<a href="%s">%s</a>',
+						esc_url( add_query_arg( array( 'post_type' => $post->post_type, 'slider_type' => $term->slug ), 'edit.php' ) ),
+						esc_html( sanitize_term_field( 'name', $term->name, $term->term_id, 'slider_type', 'display' ) )
+					);
+				}
+
+				/* Join the terms, separating them with a comma. */
+				echo join( ', ', $out );
+			}
+
+			/* If no terms were found, output a default message. */
+			else {
+				_e( 'No Slider Type Assigned' );
+			}
+
+			break;        
+    default:
+        break;
+    } // end switch
+}
+
+function define_slider_type_terms() {
+	$terms = array(
+		'0' => array( 'name' => 'Front Hero','slug' => 'front'),
+		'1' => array( 'name' => 'Research Area','slug' => 'research'),
+		'2' => array( 'name' => 'Program Parent','slug' => 'program'),
+    	);
+    return $terms;
+}
+
+function check_slider_type_terms(){
+
+	//see if we already have populated any terms
+	$terms = get_terms ('slider_type', array( 'hide_empty' => false ) );
+
+	//if no terms then lets add our terms
+	  if( empty( $terms ) ){
+	$terms = array(
+		'0' => array( 'name' => 'Front Hero','slug' => 'front'),
+		'1' => array( 'name' => 'Research Area','slug' => 'research'),
+		'2' => array( 'name' => 'Program Parent','slug' => 'program'),
+    	);
+        foreach( $terms as $term ){
+            if( !term_exists( $term['name'], 'slider_type' ) ){
+                wp_insert_term( $term['name'], 'slider_type', array( 'slug' => $term['slug'] ) );
+            }
+        }
+    }
+
+}
+
+add_action ( 'init', 'check_slider_type_terms' ); 
+
 
 ?>
